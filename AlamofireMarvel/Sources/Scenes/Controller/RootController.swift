@@ -6,10 +6,13 @@
 //
 
 import UIKit
+import Alamofire
 
 class RootController: UIViewController {
     
     // MARK: - Properties
+    
+    private let networkProvider = NetworkProvider()
 
     private var rootView: RootView? {
         guard isViewLoaded else { return nil }
@@ -23,6 +26,8 @@ class RootController: UIViewController {
         view = RootView()
         setupNavigation()
         setupSeach()
+        
+        networkProvider.fetchData()
     }
     
     private lazy var searchController: UISearchController = {
