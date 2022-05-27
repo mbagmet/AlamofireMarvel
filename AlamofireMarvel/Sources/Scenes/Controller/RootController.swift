@@ -75,6 +75,8 @@ extension RootController: UISearchResultsUpdating {
 extension RootController: RootViewDelegate {
     func changeViewController(with character: Character) {
         let detailViewController = DetailViewController()
+        detailViewController.model = character
+        
         detailViewController.modalPresentationStyle = .popover
         detailViewController.modalTransitionStyle = .coverVertical
         navigationController?.present(detailViewController, animated: true, completion: nil)
