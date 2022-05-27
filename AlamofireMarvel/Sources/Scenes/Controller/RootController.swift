@@ -13,6 +13,7 @@ class RootController: UIViewController {
     // MARK: - Properties
     
     var model: [Character]?
+    var characters: [Character]?
     
     private let networkProvider = NetworkProvider()
 
@@ -37,8 +38,9 @@ class RootController: UIViewController {
         setupNavigation()
         setupSeach()
         
-        networkProvider.fetchData() { characters in
+        networkProvider.fetchData(characterName: nil) { characters in
             self.model = characters
+            self.characters = characters
             self.configureView()
         }
         

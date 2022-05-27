@@ -15,7 +15,11 @@ class NetworkProvider {
                               "ts": marvelAPI.ts,
                               "hash": marvelAPI.hash]
 
-    func fetchData(completion: @escaping ([Character]) -> ()) {
+    func fetchData(characterName: String?, completion: @escaping ([Character]) -> ()) {
+        if let name = characterName {
+            parameters["name"] = name
+        }
+    
         AF.request(url, method: .get, parameters: parameters, encoding: URLEncoding.default).response { response in
             //debugPrint(response)
             print(self.parameters)
