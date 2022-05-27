@@ -18,12 +18,12 @@ class NetworkProvider {
     func fetchData() {
         AF.request(url, method: .get, parameters: parameters, encoding: URLEncoding.default).response { response in
             //debugPrint(response)
-            print(Thread.current)
+            print(self.parameters)
         }
         .validate()
         .responseDecodable(of: MarvelAPI.self) { (response) in
-           guard let characters = response.value?.data else { return }
-           print(characters.all[0])
+            guard let characters = response.value?.data else { return }
+            completion(characters.all)
        }
     }
 }
