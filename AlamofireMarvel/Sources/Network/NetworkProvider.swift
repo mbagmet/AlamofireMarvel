@@ -8,13 +8,19 @@
 import Foundation
 import Alamofire
 
-class NetworkProvider {
-    private var url: String { "\(marvelAPI.domain)\(marvelAPI.path)\(marvelSections.characters)" }
+class NetworkProvider: NetworkProviderErrorHandler {
     
+    // MARK: - Properties
+    
+    var delegate: NetworkProviderDelegate?
+    
+    private var url: String { "\(marvelAPI.domain)\(marvelAPI.path)\(marvelSections.characters)" }
     private var parameters = ["apikey": marvelAPI.publicKey,
                               "ts": marvelAPI.ts,
                               "hash": marvelAPI.hash]
 
+    // MARK: - Functions
+    
     func fetchData(characterName: String?, completion: @escaping ([Character]) -> ()) {
         if let name = characterName {
             switch name {
@@ -26,10 +32,23 @@ class NetworkProvider {
         }
     
         AF.request(url, method: .get, parameters: parameters, encoding: URLEncoding.default)
-        .validate()
-        .responseDecodable(of: MarvelAPI.self) { (response) in
-            guard let characters = response.value?.data else { return }
-            completion(characters.all)
+            .validate(statusCode: 200..<300)
+            .validate(contentType: ["application/json"])
+            .responseData { response in
+                switch response.result {
+                case .success:
+                    print("Validation Successful")
+                case let .failure(error):
+                    self.delegate?.showAlert(message: error.errorDescription?.description)
+                }
+            }
+            .responseDecodable(of: MarvelAPI.self) { (response) in
+                guard let characters = response.value?.data else { return }
+                
+                if characters.count == 0 {
+                    self.delegate?.showAlert(message: nil)
+                }
+                completion(characters.all)
        }
     }
 }

@@ -39,14 +39,14 @@ class RootController: UIViewController {
         setupSeach()
         
         searchController.searchBar.delegate = self
+        configureViewDelegate()
+        configureNetworkProviderDelegate()
         
         networkProvider.fetchData(characterName: nil) { characters in
             self.model = characters
             self.characters = characters
             self.configureView()
         }
-        
-        configureViewDelegate()
     }
 }
 
@@ -93,6 +93,19 @@ extension RootController: UISearchBarDelegate {
     }
 }
 
+// MARK: - Error Alert
+
+extension RootController: NetworkProviderDelegate {
+    func showAlert(message: String?) {
+        let alert = UIAlertController(title: Strings.errorAlertTitle,
+                                      message: message != nil ? message : Strings.errorAlertText,
+                                      preferredStyle: .alert)
+        let action = UIAlertAction(title: Strings.errorAlertButtonTitle, style: .cancel, handler: nil)
+        alert.addAction(action)
+        self.present(alert, animated: true, completion: nil)
+    }
+}
+
 // MARK: - RootViewDelegate
 
 extension RootController: RootViewDelegate {
@@ -119,6 +132,10 @@ private extension RootController {
     func configureViewDelegate() {
         rootView?.delegate = self
     }
+    
+    func configureNetworkProviderDelegate() {
+        networkProvider.delegate = self
+    }
 }
 
 // MARK: - Constants
@@ -127,5 +144,9 @@ extension RootController {
     enum Strings {
         static let searchBarPlaceholder = "Поиск по имени персонажа"
         static let navigationTitle = "Персонажи"
+        
+        static let errorAlertTitle = "Ошибка"
+        static let errorAlertText = "По вашему запросу ничего не найдено. Попробуйте ввести другой запрос."
+        static let errorAlertButtonTitle = "OK"
     }
 }

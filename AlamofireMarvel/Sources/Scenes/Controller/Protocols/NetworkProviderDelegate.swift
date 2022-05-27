@@ -6,3 +6,7 @@
 //
 
 import Foundation
+
+protocol NetworkProviderDelegate {
+    func showAlert(message: String?)
+}

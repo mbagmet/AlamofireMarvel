@@ -6,3 +6,7 @@
 //
 
 import Foundation
+
+protocol NetworkProviderErrorHandler {
+    var delegate: NetworkProviderDelegate? { get set }
+}
