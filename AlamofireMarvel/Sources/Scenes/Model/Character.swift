@@ -38,7 +38,7 @@ struct CharacterImage: Decodable {
         let workItem = DispatchWorkItem {
             guard let imagePath = path,
                   let imageExtension = format,
-                  let imageURL = URL(string: "\(imagePath)/\(size == .small ? "standard_medium" : "portrait_incredible").\(imageExtension)"),
+                  let imageURL = URL(string: "\(imagePath)/\(size == .small ? "standard_medium" : "landscape_incredible").\(imageExtension)"),
                   let imageData = try? Data(contentsOf: imageURL)
             else { return }
             data = imageData

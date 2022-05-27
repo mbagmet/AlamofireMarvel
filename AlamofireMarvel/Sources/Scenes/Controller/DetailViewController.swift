@@ -8,11 +8,23 @@
 import UIKit
 
 class DetailViewController: UIViewController {
+    
+    // MARK: - Properties
+    
+    var model: Character?
+
+    private var detailView: DetailView? {
+        guard isViewLoaded else { return nil }
+        return view as? DetailView
+    }
+    
+    // MARK: - Lifecycle
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        self.view.backgroundColor = .secondarySystemBackground | .systemBackground
+        view = DetailView()
+        self.configureView()
     }
     
     // MARK: - Initializers
@@ -23,5 +35,14 @@ class DetailViewController: UIViewController {
 
     required init?(coder: NSCoder) {
         super.init(coder: coder)
+    }
+}
+
+// MARK: - Configuration
+
+extension DetailViewController: ModelDelegate {
+    func configureView() {
+        guard let model = model else { return }
+        detailView?.configureView(with: model)
     }
 }
