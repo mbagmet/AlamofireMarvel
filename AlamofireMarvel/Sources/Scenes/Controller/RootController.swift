@@ -38,6 +38,8 @@ class RootController: UIViewController {
         setupNavigation()
         setupSeach()
         
+        searchController.searchBar.delegate = self
+        
         networkProvider.fetchData(characterName: nil) { characters in
             self.model = characters
             self.characters = characters
@@ -61,14 +63,33 @@ extension RootController {
 
 extension RootController {
     private func setupSeach() {
-        searchController.searchResultsUpdater = self
         navigationItem.searchController = searchController
     }
 }
 
-extension RootController: UISearchResultsUpdating {
-    func updateSearchResults(for search: UISearchController) {
-        // TODO
+extension RootController: UISearchBarDelegate {
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        guard let characterName = searchController.searchBar.text else { return }
+        networkProvider.fetchData(characterName: characterName) { characters in
+            self.model = characters
+            self.configureView()
+        }
+    }
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        searchController.searchBar.text = nil
+        searchController.searchBar.resignFirstResponder()
+        model = characters
+        configureView()
+    }
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        guard characters != nil,
+              searchController.searchBar.text == ""
+        else { return }
+        
+        self.model = characters
+        self.configureView()
     }
 }
 
@@ -104,7 +125,7 @@ private extension RootController {
 
 extension RootController {
     enum Strings {
-        static let searchBarPlaceholder = "Поиск"
+        static let searchBarPlaceholder = "Поиск по имени персонажа"
         static let navigationTitle = "Персонажи"
     }
 }
