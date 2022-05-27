@@ -114,13 +114,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		06C81A4E9AB51B111B11868B /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Pods;
-			sourceTree = "<group>";
-		};
 		D92988FA283F7AC300C7C8C3 /* Network */ = {
 			isa = PBXGroup;
 			children = (
@@ -174,7 +167,6 @@
 				D9396946283ED00B00F45019 /* AlamofireMarvelTests */,
 				D9396950283ED00B00F45019 /* AlamofireMarvelUITests */,
 				D939692E283ED00A00F45019 /* Products */,
-				06C81A4E9AB51B111B11868B /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
