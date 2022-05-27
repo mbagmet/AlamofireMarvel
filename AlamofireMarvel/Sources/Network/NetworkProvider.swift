@@ -15,11 +15,17 @@ class NetworkProvider {
                               "ts": marvelAPI.ts,
                               "hash": marvelAPI.hash]
 
-    func fetchData(completion: @escaping ([Character]) -> ()) {
-        AF.request(url, method: .get, parameters: parameters, encoding: URLEncoding.default).response { response in
-            //debugPrint(response)
-            print(self.parameters)
+    func fetchData(characterName: String?, completion: @escaping ([Character]) -> ()) {
+        if let name = characterName {
+            switch name {
+            case "":
+                parameters.removeValue(forKey: "name")
+            default:
+                parameters["name"] = name
+            }
         }
+    
+        AF.request(url, method: .get, parameters: parameters, encoding: URLEncoding.default)
         .validate()
         .responseDecodable(of: MarvelAPI.self) { (response) in
             guard let characters = response.value?.data else { return }
