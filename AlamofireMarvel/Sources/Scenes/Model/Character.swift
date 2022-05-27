@@ -27,12 +27,32 @@ struct CharacterImage: Decodable {
     private let path: String?
     private let format: String?
     
-    var imageUrl: String? {
-        return "\(path ?? "")\(format ?? "")"
-    }
-    
     enum CodingKeys: String, CodingKey {
         case path
         case format = "extension"
+    }
+    
+    func getImage(size: ImageSize, queue: DispatchQueue = DispatchQueue.global(qos: .utility), completion: @escaping (Data?) -> ()) {
+        var data: Data?
+        
+        let workItem = DispatchWorkItem {
+            guard let imagePath = path,
+                  let imageExtension = format,
+                  let imageURL = URL(string: "\(imagePath)/\(size == .small ? "standard_medium" : "portrait_incredible").\(imageExtension)"),
+                  let imageData = try? Data(contentsOf: imageURL)
+            else { return }
+            data = imageData
+        }
+        
+        workItem.notify(queue: .main) {
+            completion(data)
+        }
+        
+        queue.async(execute: workItem)
+    }
+    
+    enum ImageSize {
+        case small
+        case big
     }
 }

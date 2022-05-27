@@ -12,22 +12,13 @@ class RootController: UIViewController {
     
     // MARK: - Properties
     
+    var model: [Character]?
+    
     private let networkProvider = NetworkProvider()
 
     private var rootView: RootView? {
         guard isViewLoaded else { return nil }
         return view as? RootView
-    }
-
-    // MARK: - Lifecycle
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        view = RootView()
-        setupNavigation()
-        setupSeach()
-        
-        networkProvider.fetchData()
     }
     
     private lazy var searchController: UISearchController = {
@@ -37,6 +28,22 @@ class RootController: UIViewController {
 
         return search
     }()
+
+    // MARK: - Lifecycle
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        view = RootView()
+        setupNavigation()
+        setupSeach()
+        
+        networkProvider.fetchData() { characters in
+            self.model = characters
+            self.configureView()
+        }
+        
+        configureViewDelegate()
+    }
 }
 
 // MARK: - Navigation
@@ -66,10 +73,22 @@ extension RootController: UISearchResultsUpdating {
 // MARK: - RootViewDelegate
 
 extension RootController: RootViewDelegate {
-    // todo
+    func changeViewController(with character: Character) {
+        let detailViewController = DetailViewController()
+        detailViewController.modalPresentationStyle = .popover
+        detailViewController.modalTransitionStyle = .coverVertical
+        navigationController?.present(detailViewController, animated: true, completion: nil)
+    }
 }
 
 // MARK: - Configuration
+
+extension RootController: ModelDelegate {
+    func configureView() {
+        guard let model = model else { return }
+        rootView?.configureView(with: model)
+    }
+}
 
 private extension RootController {
     func configureViewDelegate() {

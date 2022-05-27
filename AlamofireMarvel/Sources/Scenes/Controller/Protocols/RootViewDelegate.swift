@@ -8,5 +8,5 @@
 import Foundation
 
 protocol RootViewDelegate {
-    // todo
+    func changeViewController(with character: Character)
 }
