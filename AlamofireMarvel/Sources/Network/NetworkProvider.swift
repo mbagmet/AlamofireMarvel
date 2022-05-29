@@ -25,9 +25,9 @@ class NetworkProvider: NetworkProviderErrorHandler {
         if let name = characterName {
             switch name {
             case "":
-                parameters.removeValue(forKey: "name")
+                parameters.removeValue(forKey: "nameStartsWith")
             default:
-                parameters["name"] = name
+                parameters["nameStartsWith"] = name
             }
         }
     
